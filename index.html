@@ -1,0 +1,249 @@
+<html>
+    <body>
+        <div id="menu">
+            <button id="start">Start</button>
+            <button id="stop">Stop</button>
+            <button id="reset">Reset</button>
+            <button id="glider">Glider</button>
+            <button id="gliderGun">Glider Gun</button>
+            <button id="glidersRandomly">Random Gliders</button>
+        </div>
+
+        <script>
+            // variables
+            var boardSize = 1200;
+            var speed = 700; // in milliseconds
+
+            var board = new Array(boardSize);
+            for (var i = 0; i < board.length; i++) {
+                board[i] = new Array(boardSize);
+            }
+            for (var i = 0; i < board.length; i++) {
+                for (var j = 0; j < board[i].length; j++) {
+                    board[i][j] = 0;
+                }
+            }
+            // console.log(board);
+
+            function gameOfLife(board) {
+                var newBoard = new Array(boardSize);
+                for (var i = 0; i < newBoard.length; i++) {
+                    newBoard[i] = new Array(boardSize);
+                }
+                for (var i = 0; i < newBoard.length; i++) {
+                    for (var j = 0; j < newBoard[i].length; j++) {
+                        newBoard[i][j] = 0;
+                    }
+                }
+                for (var i = 0; i < board.length; i++) {
+                    for (var j = 0; j < board[i].length; j++) {
+                        var neighbors = 0;
+                        if (i > 0 && j > 0 && board[i - 1][j - 1] == 1) {
+                            neighbors++;
+                        }
+                        if (i > 0 && board[i - 1][j] == 1) {
+                            neighbors++;
+                        }
+                        if (i > 0 && j < board[i].length - 1 && board[i - 1][j + 1] == 1) {
+                            neighbors++;
+                        }
+                        if (j > 0 && board[i][j - 1] == 1) {
+                            neighbors++;
+                        }
+                        if (j < board[i].length - 1 && board[i][j + 1] == 1) {
+                            neighbors++;
+                        }
+                        if (i < board.length - 1 && j > 0 && board[i + 1][j - 1] == 1) {
+                            neighbors++;
+                        }
+                        if (i < board.length - 1 && board[i + 1][j] == 1) {
+                            neighbors++;
+                        }
+                        if (i < board.length - 1 && j < board[i].length - 1 && board[i + 1][j + 1] == 1) {
+                            neighbors++;
+                        }
+                        // if (board[i][j] == 1 && neighbors < 2) {
+                        // if (board[i][j] == 1 && (neighbors < 2 || neighbors > 4)) {
+                        if (board[i][j] == 1 && (neighbors <= 1 || neighbors > 3)) {
+                            newBoard[i][j] = 0;
+                        } else if (board[i][j] == 1 && neighbors > 3) {
+                            newBoard[i][j] = 0;
+                        } else if (board[i][j] == 0 && neighbors == 3) {
+                            newBoard[i][j] = 1;
+                        }
+                    }
+                }
+                return newBoard;
+            }
+
+            function spawnBlock() {
+                board[boardSize / 2][boardSize / 2] = 1;
+                board[boardSize / 2][boardSize / 2 + 1] = 1;
+                board[boardSize / 2 + 1][boardSize / 2] = 1;
+                board[boardSize / 2 + 1][boardSize / 2 + 1] = 1;
+            }
+
+            // spawn blinker
+            function spawnBlinker() {
+                board[boardSize / 2][boardSize / 2] = 1;
+                board[boardSize / 2][boardSize / 2 + 1] = 1;
+                board[boardSize / 2][boardSize / 2 - 1] = 1;
+            }
+
+            // start the game
+            function startLife(board) {
+                spawnGlidersRandomly(100)
+
+
+
+                // spawn some random cells
+                for (var i = 0; i < board.length; i++) {
+                    for (var j = 0; j < board[i].length; j++) {
+                        if (Math.random() < 0.5) {
+                            board[i][j] = 1;
+                        }
+                    }
+                }
+
+                spawnBlinker();
+                spawnBlock();
+                spawnGliderGun();
+            }
+
+
+
+            function spawnGlider() {
+                // spawn glider in random position
+                var x = Math.floor(Math.random() * boardSize);
+                var y = Math.floor(Math.random() * boardSize);
+                board[x][y] = 1;
+                board[x + 1][y] = 1;
+                board[x + 2][y] = 1;
+                board[x + 2][y - 1] = 1;
+                board[x + 1][y - 2] = 1;
+            }
+
+            function spawnGliderGun(count = 3) {
+                // spawn glider gun at the center of the board
+                var x = boardSize / 2;
+                var y = boardSize / 2;
+                board[x][y] = 1;
+                board[x + 1][y] = 1;
+                board[x][y + 1] = 1;
+                board[x + 1][y + 1] = 1;
+                board[x + 10][y] = 1;
+                board[x + 10][y + 1] = 1;
+                board[x + 10][y + 2] = 1;
+                board[x + 11][y - 1] = 1;
+                board[x + 11][y + 3] = 1;
+                board[x + 12][y - 2] = 1;
+                board[x + 12][y + 4] = 1;
+                board[x + 13][y - 2] = 1;
+                board[x + 13][y + 4] = 1;
+                board[x + 14][y + 1] = 1;
+                board[x + 15][y - 1] = 1;
+                board[x + 15][y + 3] = 1;
+                board[x + 16][y] = 1;
+                board[x + 16][y + 1] = 1;
+                board[x + 16][y + 2] = 1;
+                board[x + 17][y + 1] = 1;
+                board[x + 20][y - 2] = 1;
+                board[x + 20][y - 1] = 1;
+                board[x + 20][y] = 1;
+                board[x + 21][y - 2] = 1;
+                board[x + 21][y - 1] = 1;
+                board[x + 21][y] = 1;
+                board[x + 22][y - 3] = 1;
+                board[x + 22][y + 1] = 1;
+                board[x + 24][y - 4] = 1;
+                board[x + 24][y - 3] = 1;
+                board[x + 24][y + 1] = 1;
+                board[x + 24][y + 2] = 1;
+                board[x + 34][y - 2] = 1;
+                board[x + 34][y - 1] = 1;
+                board[x + 35][y - 2] = 1;
+                board[x + 35][y - 1] = 1;
+            }
+
+            // spawn gliders randomly
+            function spawnGlidersRandomly(numberOfGliders) {
+                for (var i = 0; i < numberOfGliders; i++) {
+                    var x = Math.floor(Math.random() * boardSize);
+                    var y = Math.floor(Math.random() * boardSize);
+                    board[x][y] = 1;
+                    board[x + 1][y + 1] = 1;
+                    board[x + 2][y + 1] = 1;
+                    board[x + 2][y] = 1;
+                    board[x + 2][y - 1] = 1;
+                }
+            }
+
+
+            var spawnGliderButton = document.getElementById("glider");
+            spawnGliderButton.addEventListener("click", function() {
+                spawnGlider();
+            });
+
+            var spawnGliderGunButton = document.getElementById("gliderGun");
+            spawnGliderGunButton.addEventListener("click", function() {
+                spawnGliderGun();
+            });
+
+            var spawnGlidersRandomlyButton = document.getElementById("glidersRandomly");
+            spawnGlidersRandomlyButton.addEventListener("click", function() {
+                spawnGlidersRandomly(1);
+            });
+
+            var interval;
+            var start = document.getElementById("start");
+            start.addEventListener("click", function() {
+                startLife(board);
+                interval = setInterval(function() {
+                    board = gameOfLife(board);
+                    update();
+                    // console.log(board);
+                }, speed);
+            });
+
+            var stop = document.getElementById("stop");
+            stop.addEventListener("click", function() {
+                clearInterval(interval);
+            });
+
+            var reset = document.getElementById("reset");
+            reset.addEventListener("click", function() {
+                clearInterval(interval);
+                // console.log(board);
+            });
+
+            // render the game board on the canvas
+            function createCanvas() {
+                var canvas = document.createElement("canvas");
+                canvas.width = boardSize;
+                canvas.height = boardSize;
+                document.body.appendChild(canvas);
+
+                var ctx = canvas.getContext("2d");
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            createCanvas();
+
+            // update the canvas to show the live cells
+            function update() {
+                var canvas = document.querySelector("canvas");
+                var ctx = canvas.getContext("2d");
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "white";
+                for (var i = 0; i < board.length; i++) {
+                    for (var j = 0; j < board[i].length; j++) {
+                        if (board[i][j] == 1) {
+                            ctx.fillRect(i * 10, j * 10, 10, 10);
+                        }
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>
